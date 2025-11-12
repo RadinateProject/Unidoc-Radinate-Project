@@ -43,12 +43,12 @@ export default function DriftPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <Activity className="text-purple-500" /> Drift Monitor
+          <Activity className="text-blue-500" /> Drift Monitor
         </h1>
 
         <button
           onClick={() => window.location.reload()}
-          className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
         >
           Refresh
         </button>

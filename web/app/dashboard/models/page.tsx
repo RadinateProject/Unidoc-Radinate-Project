@@ -51,12 +51,12 @@ export default function ModelsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <Brain className="text-purple-500" /> AI Models Explorer
+          <Brain className="text-blue-500" /> AI Models Explorer
         </h1>
 
         <button
           onClick={() => window.location.reload()}
-          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition"
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
         >
           <RefreshCcw size={16} /> Refresh
         </button>
