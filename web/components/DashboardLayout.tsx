@@ -10,6 +10,7 @@ const roleRoutes: Record<string, { label: string; href: string }[]> = {
   'CMIO': [
     { label:  'Performance Metrics', href: '/metrics' },
     { label: 'Models Explorer', href: '/models' },
+    { label: 'Drift Monitor', href: '/drift' },
     { label: 'Fairness Monitor', href: '/fairness' },
     { label: 'Alerts Center', href: '/alerts' },
     { label: 'RBAC Users', href: '/users' },

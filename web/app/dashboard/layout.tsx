@@ -6,11 +6,13 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import ToggleDarkMode from '@/components/ui/ToggleDarkMode';
 
 const roleRoutes: Record<string, { label: string; href: string }[]> = {
   'CMIO': [
     { label: 'Metrics Dashboard', href: '/dashboard/metrics' },
     { label: 'Models Explorer', href: '/dashboard/models' },
+    { label: 'Drift Monitor', href: '/dashboard/drift' },
     { label: 'Fairness Monitor', href: '/dashboard/fairness' },
     { label: 'Alerts Center', href: '/dashboard/alerts' },
     { label: 'RBAC Users', href: '/dashboard/users' },
@@ -63,6 +65,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       >
         <div className="p-4 flex items-center justify-between border-b">
           {!collapsed && <h2 className="text-xl font-bold">Radinate</h2>}
+          
           <button
             onClick={() => setCollapsed(!collapsed)}
             className="text-gray-600 hover:text-blue-600 focus:outline-none"
@@ -73,22 +76,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <ul className="flex-1 overflow-y-auto space-y-1 mt-4 px-2">
           {links.map((link) => (
-            <li key={link.href}>
+            <>
+            <li key={link.href} >
               <Link
                 href={link.href}
-                className={`block px-3 py-2 rounded-md hover:bg-blue-50 hover:text-blue-600 transition-colors ${
+                className={`block px-3 py-2 rounded-md hover:bg-blue-50 hover:text-blue-600 transition-colors flex divide-x divide-gray-300 ${
                   collapsed ? 'text-center text-sm' : 'text-base'
                 }`}
               >
                 {link.label}
               </Link>
             </li>
+            <hr />
+            </>
           ))}
         </ul>
 
         {/* Footer Info */}
-        <div className="p-4 border-t text-sm text-gray-500">
-          {!collapsed && (
+        <div className="p-4 border-t text-sm text-gray-500 flex justify-between items-center space-x-2">
+          <div>{!collapsed && (
             <>
               <p>{user.email}</p>
               <p className="text-xs text-gray-400 mb-2">{user.role}</p>
@@ -101,7 +107,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             }`}
           >
             Logout
-          </button>
+          </button></div>
+          <ToggleDarkMode />
         </div>
       </aside>
 
