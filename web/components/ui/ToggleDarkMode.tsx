@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Sun, Moon } from 'lucide-react'; 
+import { useTheme } from '@/context/ThemeContext';
 
 const ToggleDarkMode = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [theme, setTheme] = useState('light');
+  // const [isDarkMode, setIsDarkMode] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  // const [theme, setTheme] = useState('light');
 
-  useEffect(() => {
-    document.body.className = `${theme}-theme`;
-  }, [theme]);
+  // useEffect(() => {
+  //   document.body.className = `${theme}-theme`;
+  // }, [theme]);
 
   const handleToggle = () => {
-    setIsDarkMode(!isDarkMode);
+    toggleTheme();
     // setTheme(currentTheme => (currentTheme === 'light' ? 'dark' : 'light'));
   };
 
@@ -18,11 +20,11 @@ const ToggleDarkMode = () => {
     <button
       onClick={handleToggle}
       className={`p-2 rounded-full transition-colors ${
-        isDarkMode ? 'bg-gray-800 text-yellow-100' : 'bg-gray-200 text-gray-800'
+        theme === 'dark' ? 'bg-gray-800 text-yellow-100' : 'bg-gray-200 text-gray-800'
       }`}
       aria-label="Toggle dark mode"
     >
-      {isDarkMode ? (
+      {theme === 'dark' ? (
         <Sun className="h-4 w-4" />
       ) : (
         <Moon className="h-4 w-4" /> 
