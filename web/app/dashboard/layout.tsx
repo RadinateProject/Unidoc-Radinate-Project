@@ -106,7 +106,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             const Icon = item.icon;
             const active = pathname.startsWith(item.href);
 
-            return (
+            return (<>
               <Link
                 key={item.href}
                 href={item.href}
@@ -122,6 +122,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Icon size={18} />
                 {!collapsed && <span>{item.label}</span>}
               </Link>
+              <hr />
+              </>
             );
           })}
         </nav>
