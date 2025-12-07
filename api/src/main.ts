@@ -12,7 +12,8 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  await app.listen(3001,'0.0.0.0');
+  // await app.listen(3001,'0.0.0.0');
+  await app.getHttpServer().listen(3001, '0.0.0.0');
   console.log('API listening on http://localhost:3001');
 }
 bootstrap();
