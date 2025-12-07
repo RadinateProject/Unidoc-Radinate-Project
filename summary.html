@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Radinate — Post‑Market AI Validation for Radiology</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#94a3b8; --accent:#7c3aed; --glass: rgba(255,255,255,0.04);
+      --maxw:1100px; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background: linear-gradient(180deg,var(--bg) 0%, #071122 100%);color:#e6eef8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
+    .container{width:100%;max-width:var(--maxw)}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:40px;backdrop-filter: blur(6px);box-shadow:0 10px 30px rgba(2,6,23,0.7);border:1px solid rgba(255,255,255,0.04)}
+    header{display:flex;align-items:center;gap:20px;margin-bottom:28px}
+    .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#2dd4bf);display:flex;align-items:center;justify-content:center;font-weight:800;color:#041025}
+    h1{margin:0;font-size:1.6rem;letter-spacing:-0.02em}
+    .sub{color:var(--muted);font-size:0.95rem;margin-top:6px}
+
+    .layout{display:grid;grid-template-columns:1fr 420px;gap:28px}
+    .hero p{color:var(--muted);line-height:1.6}
+    .cta{display:flex;gap:12px;margin-top:18px}
+    .btn{padding:10px 16px;border-radius:10px;font-weight:600;border:0;cursor:pointer}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),#3b82f6);color:white;box-shadow:0 6px 20px rgba(124,58,237,0.18)}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    .features{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px}
+    .feature{background:var(--glass);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+    .feature h4{margin:0 0 6px 0}
+    .feature p{margin:0;color:var(--muted);font-size:0.92rem}
+
+    aside{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);height:100%}
+    .aside-title{font-weight:700;margin-bottom:10px}
+    .stat{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.02)}
+    .muted{color:var(--muted);font-size:0.92rem}
+
+    .why, .market{margin-top:22px;background:rgba(255,255,255,0.02);padding:16px;border-radius:10px}
+    .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    a.link{color:white;text-decoration:none;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02);font-weight:600}
+
+    footer{margin-top:18px;color:var(--muted);font-size:0.86rem;display:flex;justify-content:space-between;align-items:center}
+
+    @media (max-width:980px){.layout{grid-template-columns:1fr;}.hero{order:1}.aside{order:2}.container{padding:0 12px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <header>
+        <!-- <div 
+        class="logo"
+        >
+      </div> -->
+      <img src="./logo.png" height="80px" width="100px" />
+        <div>
+          <h1>Radinate: Post‑Market AI Validation Platform</h1>
+          <div class="sub">Ensuring radiology AI stays safe and effective — continuous local testing, drift detection, and regulatory readiness.</div>
+        </div>
+      </header>
+
+      <div class="layout">
+        <main class="hero">
+          <h2 style="margin:0 0 10px 0">The Problem</h2>
+          <p>
+            The radiology supply–demand gap is vast. AI in medical imaging can transform care, but models that look great in the lab
+            can fail in local, real‑world settings. Without local testing and continuous monitoring, AI-driven decisions risk automation bias and may harm patient outcomes.
+          </p>
+
+          <div class="why" style="margin-top:18px">
+            <h3 style="margin:0 0 8px 0">Our Solution</h3>
+            <p class="muted">Radinate is a post-market AI validation platform designed to fill this gap. We enable hospitals to conduct local testing, identify AI model limitations, and continuously monitor for performance drift. By providing confidence intervals on AI’s decisions, we bridge the gap between clinicians and AI — building trust and supporting FDA regulatory compliance.</p>
+          </div>
+
+          <h3 style="margin-top:18px">Key Features</h3>
+          <div class="features">
+            <div class="feature">
+              <h4>AI Drift Detection & Re‑validation</h4>
+              <p>Identify errors in real time, reducing manual review by <strong>up to 80%</strong>.</p>
+            </div>
+            <div class="feature">
+              <h4>Regulatory Compliance</h4>
+              <p>PCCP and EU AI Act‑ready reports for smoother approvals.</p>
+            </div>
+            <div class="feature">
+              <h4>Vendor Collaboration</h4>
+              <p>Built‑in feedback loops improve vendor models and accelerate regulatory approvals.</p>
+            </div>
+            <div class="feature">
+              <h4>Confidence Intervals</h4>
+              <p>Deliver statistically sound confidence on model decisions to reduce automation bias.</p>
+            </div>
+          </div>
+
+          <div class="market" style="margin-top:18px">
+            <h3 style="margin:0 0 8px 0">Why Now?</h3>
+            <p class="muted">The FDA and EU are mandating continuous post‑market monitoring, which becomes critical by 2026. Radinate helps hospitals adopt AI safely and remain compliant.</p>
+            <h4 style="margin-top:12px">Market Opportunity</h4>
+            <p class="muted">AI in imaging is expected to grow to <strong>$4.54B</strong> by 2029. Radinate positions to capture an estimated <strong>$55M</strong> annual revenue within five years.</p>
+          </div>
+
+          <div class="cta">
+            <a class="btn btn-primary" href="https://www.radinate.com/" target="_blank" rel="noopener">Visit Radinate</a>
+            <a class="btn btn-ghost" href="https://drive.google.com/drive/u/0/folders/1FR-ZqGWiDqZwaKpT9RNk8VTGfi0-uNGR" target="_blank" rel="noopener">Download Pitchdeck</a>
+          </div>
+        </main>
+
+        <aside>
+          <div class="aside-title">Quick Snapshot</div>
+          <div class="stat"><div><div style="font-weight:700">Post‑Market Validation</div><div class="muted">Local testing and continuous monitoring</div></div></div>
+          <div class="stat"><div><div style="font-weight:700">Automation Risk</div><div class="muted">Detect and mitigate automation bias</div></div></div>
+          <div class="stat"><div><div style="font-weight:700">Compliance</div><div class="muted">PCCP & EU AI Act ready</div></div></div>
+
+          <div style="margin-top:14px">
+            <div class="muted" style="font-weight:700;margin-bottom:8px">Impact</div>
+            <p class="muted" style="margin:0">Reduce manual review by <strong>~80%</strong> with real‑time drift alerts and re‑validation workflows.</p>
+          </div>
+
+          <div style="margin-top:16px">
+            <div class="muted" style="font-weight:700;margin-bottom:8px">Resources</div>
+            <div class="links">
+              <a class="link" href="https://www.radinate.com/" target="_blank" rel="noopener">Website</a>
+              <a class="link" href="https://drive.google.com/drive/u/0/folders/1FR-ZqGWiDqZwaKpT9RNk8VTGfi0-uNGR" target="_blank" rel="noopener">Pitchdeck</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <footer>
+        <div>© Radinate — Post‑Market AI Validation</div>
+        <div class="muted">Built for safe AI adoption in radiology</div>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
