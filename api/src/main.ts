@@ -1,3 +1,10 @@
+// top of src/main.ts (first lines)
+import { webcrypto as nodeWebCrypto } from 'crypto';
+
+if (typeof globalThis.crypto === 'undefined') {
+  (globalThis as any).crypto = nodeWebCrypto;
+}
+
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
