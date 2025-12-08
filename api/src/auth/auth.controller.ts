@@ -15,9 +15,9 @@ export class AuthController {
     });
   const safeBody = { email: body.email, password: body.password };
   console.log('[AUTH DEBUG] incoming body:', safeBody,user);
-  console.log("compare", await bcrypt.compare(body.password, user.password))
+  console.log("compare", !user || !(await bcrypt.compare(body.password, user.password)))
     if (!user || !(await bcrypt.compare(body.password, user.password))) {
-      
+      console.log('[AUTH DEBUG] Invalid credentials for email:', user?.email);
       throw new UnauthorizedException('Invalid credentials');
     }
  
