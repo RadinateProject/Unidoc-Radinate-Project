@@ -1,15 +1,30 @@
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+//@ts-ignore
+import * as crypto from 'crypto';
+
+import { EncryptionService } from '../src/encryption.service';
 
 const prisma = new PrismaClient();
 
+const encryptionService = new EncryptionService();
+  //@ts-ignore
+const INDEX_KEY = Buffer.from(
+  //@ts-ignore
+  process.env.FINDING_INDEX_KEY_BASE64!,
+  'base64',
+);
+
+function hmac(value: string) {
+  return crypto.createHmac('sha256', INDEX_KEY).update(value).digest('hex');
+}
+
 async function main() {
-  console.log('🌱 Starting Radinate seed process...\n');
+  console.log('🌱 Starting encrypted Radinate seed process...\n');
 
   // ------------------------------
-  // 1️⃣ Create Roles
+  // 1️⃣ Roles
   // ------------------------------
-  console.log('👥 Seeding roles...');
   const roles = ['CMIO', 'Chief Risk Officer', 'CFO', 'Radiology Lead'];
 
   for (const name of roles) {
@@ -21,68 +36,55 @@ async function main() {
   }
 
   // ------------------------------
-  // 2️⃣ Create Users
+  // 2️⃣ Users (encrypted email)
   // ------------------------------
-  console.log('👤 Seeding users...');
-  const cmioRole = await prisma.rBACRole.findUnique({ where: { name: 'CMIO' } });
-  const croRole = await prisma.rBACRole.findUnique({ where: { name: 'Chief Risk Officer' } });
-  const cfoRole = await prisma.rBACRole.findUnique({ where: { name: 'CFO' } });
-  const radLeadRole = await prisma.rBACRole.findUnique({ where: { name: 'Radiology Lead' } });
   const hashed = await bcrypt.hash('changeme123', 10);
-  await prisma.rBACUser.upsert({
-    where: { email: 'cmio@radinate.com' },
-    update: {},
-    create: {
-      email: 'cmio@radinate.com',
-      password: hashed,
-      role_id: cmioRole!.id,
-    },
-  });
 
-  await prisma.rBACUser.upsert({
-    where: { email: 'cro@radinate.com' },
-    update: {},
-    create: {
-      email: 'cro@radinate.com',
-      password: hashed,
-      role_id: croRole!.id,
-    },
-  });
+  const users = [
+    { email: 'cmio@radinate.com', role: 'CMIO' },
+    { email: 'cro@radinate.com', role: 'Chief Risk Officer' },
+    { email: 'cfo@radinate.com', role: 'CFO' },
+    { email: 'radiologylead@radinate.com', role: 'Radiology Lead' },
+  ];
 
-  await prisma.rBACUser.upsert({
-    where: { email: 'cfo@radinate.com' },
-    update: {},
-    create: {
-      email: 'cfo@radinate.com',
-      password: hashed,
-      role_id: cfoRole!.id,
-    },
-  });
+  for (const u of users) {
+    const role = await prisma.rBACRole.findUnique({ where: { name: u.role } });
+    const enc = await encryptionService.encode(u.email);
 
-  await prisma.rBACUser.upsert({
-    where: { email: 'radiologylead@radinate.com' },
-    update: {},
-    create: {
-      email: 'radiologylead@radinate.com',
-      password: hashed,
-      role_id: radLeadRole!.id,
-    },
-  });
+    await prisma.rBACUser.upsert({
+      where: { email_index: hmac(u.email) },
+      update: {},
+      create: {
+        email_ciphertext: enc.ciphertext,
+        email_encrypted_dek: enc.encryptedDEK,
+        email_index: hmac(u.email),
+        password: hashed,
+        role_id: role!.id,
+      },
+    });
+  }
 
   // ------------------------------
   // 3️⃣ Studies + AI Outputs + Ground Truths
   // ------------------------------
-  console.log('🩻 Seeding studies, AI outputs & ground truths...');
   for (let i = 1; i <= 10; i++) {
     const study_uid = `1.2.840.113619.${1000 + i}`;
+
+    const patientBlob = JSON.stringify({
+      accession: `ACC-${i}`,
+      patient_age: 30 + i,
+      patient_sex: i % 2 === 0 ? 'F' : 'M',
+    });
+
+    const patientEnc = await encryptionService.encode(patientBlob);
+
     const study = await prisma.study.upsert({
       where: { study_uid },
       update: {},
       create: {
         study_uid,
-        accession: `ACC-${i}`,
-        patient_age: 30 + i,
-        patient_sex: i % 2 === 0 ? 'F' : 'M',
+        patient_id_ciphertext: patientEnc.ciphertext,
+        patient_id_encrypted_dek: patientEnc.encryptedDEK,
         site_id: `SITE-${(i % 3) + 1}`,
         scanner_make: 'GE Healthcare',
         scanner_model: 'Senographe Pristina',
@@ -90,46 +92,55 @@ async function main() {
     });
 
     for (let j = 1; j <= 3; j++) {
+      const finding = `Finding-${j}`;
+      const encFinding = await encryptionService.encode(finding);
+
       await prisma.aIOutput.upsert({
         where: {
-          study_id_finding: {
+          study_id_finding_index: {
             study_id: study.id,
-            finding: `Finding-${j}`,
+            finding_index: hmac(finding),
           },
         },
         update: {},
         create: {
           study_id: study.id,
-          finding: `Finding-${j}`,
+          finding_ciphertext: encFinding.ciphertext,
+          finding_encrypted_dek: encFinding.encryptedDEK,
+          finding_index: hmac(finding),
           confidence: parseFloat((Math.random() * 0.4 + 0.6).toFixed(2)),
         },
       });
     }
 
+    const gtFinding = 'Finding-1';
+    const gtEnc = await encryptionService.encode(gtFinding);
+
     await prisma.groundTruth.upsert({
       where: {
         study_id_finding: {
           study_id: study.id,
-          finding: 'Finding-1',
+          finding_index: hmac(gtFinding),
         },
       },
       update: {},
       create: {
         study_id: study.id,
-        finding: 'Finding-1',
+        finding_ciphertext: gtEnc.ciphertext,
+        finding_encrypted_dek: gtEnc.encryptedDEK,
+        finding_index: hmac(gtFinding),
       },
     });
   }
 
   // ------------------------------
-  // 4️⃣ Comparison Results
+  // 4️⃣ Comparison Results (plaintext)
   // ------------------------------
-  console.log('📊 Seeding comparison results...');
   const studies = await prisma.study.findMany();
   for (const study of studies) {
     await prisma.comparisonResult.create({
       data: {
-        study_id: study.id,  
+        study_id: study.id,
         study_uid: study.study_uid,
         model_name: 'AIModel-X',
         model_version: 'v1.0',

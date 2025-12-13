@@ -1,4 +1,5 @@
 // top of src/main.ts (first lines)
+import 'reflect-metadata';
 import { webcrypto as nodeWebCrypto } from 'crypto';
 
 if (typeof globalThis.crypto === 'undefined') {

@@ -3,6 +3,7 @@ import { AiModule } from './ai/ai.module';
 import { GroundModule } from './ground/ground.module';
 import { StudyModule } from './study/study.module';
 import { PrismaService } from './prisma.service';
+import { EncryptionService } from './encryption.service';
 import { JobsModule } from './jobs/jobs.module';
 import { DriftModule } from './drift/drift.module';
 import { FairnessModule } from './fairness/fairness.module';
@@ -35,6 +36,7 @@ import { AuthModule } from './auth/auth.module';
   ],
   controllers: [],
   providers: [PrismaService,
+    EncryptionService,
     //If you want all controllers to require JWT by default,
     //     {
     //   provide: APP_GUARD,

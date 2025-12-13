@@ -16,53 +16,73 @@ datasource db {
 // ---------------------------------------------
 
 model Study {
-  id            Int      @id @default(autoincrement())
-  study_uid     String   @unique
-  accession     String?
-  patient_id    String?
-  patient_age   Int?
-  patient_sex   String?
-  patient_race  String?
+  id        Int    @id @default(autoincrement())
+  study_uid String @unique
+
+  // ---- PLAINTEXT (temporary) ----
+  accession         String?
+  patient_id        String?
+  patient_age       Int?
+  patient_sex       String?
+  patient_race      String?
   patient_ethnicity String?
+
+  // ---- ENCRYPTED FIELDS ----
+  patient_id_ciphertext    String?
+  patient_id_encrypted_dek String?
+  patient_id_kms_key_id    String?
+  patient_id_index         String? // HMAC for lookup if needed
+
+  patient_demographics_ciphertext    String?
+  patient_demographics_encrypted_dek String?
+
   site_id       String?
   scanner_make  String?
   scanner_model String?
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   aiOutputs         AIOutput[]
   groundTruths      GroundTruth[]
-  comparisonResults ComparisonResult[] // ✅ back relation
+  comparisonResults ComparisonResult[]
 }
 
 model AIOutput {
-  id         Int      @id @default(autoincrement())
-  study_id   Int
-  finding    String
-  confidence Float
-  summary    String?
-  created_at DateTime @default(now())
+  id                   Int @id @default(autoincrement())
+  study_id             Int
+  finding_ciphertext   String
+  finding_encrypted_dek String
+  finding_index        String
+  confidence           Float
+  created_at           DateTime @default(now())
 
-  // Relation
+  //finding_kms_key_id     String?
+
+  // Encrypted summary (optional)
+  summary_ciphertext     String?
+  summary_encrypted_dek  String?
+
   study Study @relation(fields: [study_id], references: [id], onDelete: Cascade)
 
-  // Compound unique constraint so we can use upsert in seeds
-  @@unique([study_id, finding], name: "study_id_finding")
+  @@unique([study_id, finding_index])
 }
+
 
 model GroundTruth {
-  id         Int      @id @default(autoincrement())
-  study_id   Int
-  finding    String
-  pneumothorax_flag Int?
-  created_at DateTime @default(now())
+  id                     Int      @id @default(autoincrement())
+  study_id               Int
+  finding_ciphertext     String
+  finding_encrypted_dek  String
+  finding_index          String
+  pneumothorax_flag      Int?
+  created_at             DateTime @default(now())
 
-  // Relation
   study Study @relation(fields: [study_id], references: [id], onDelete: Cascade)
 
-  // Compound unique constraint to prevent duplicate truth entries
-  @@unique([study_id, finding], name: "study_id_finding")
+  @@unique([study_id, finding_index], name: "study_id_finding")
 }
+
 
 model AuditLog {
   id        Int      @id @default(autoincrement())
@@ -71,22 +91,28 @@ model AuditLog {
   entity    String?
   entity_id Int?
   timestamp DateTime @default(now())
-  payload   Json?     // ✅ added (to store job summaries or request bodies)
+
+  // ---- PLAINTEXT (temporary) ----
+  payload Json?
+
+  // ---- ENCRYPTED ----
+  payload_ciphertext    String?
+  payload_encrypted_dek String?
 }
 
 model ComparisonResult {
-  id            Int       @id @default(autoincrement())
-  job_id        String    @default(uuid())
-  study_uid     String
-  study_id      Int
-  model_name    String?    // ✅ added
-  model_version String?    // ✅ added
+  id                  Int      @id @default(autoincrement())
+  job_id              String   @default(uuid())
+  study_uid           String
+  study_id            Int
+  model_name          String? // ✅ added
+  model_version       String? // ✅ added
   cohort_pneumothorax String?
-  provenance  String?
-  precision     Float
-  recall        Float
-  f1_score      Float
-  created_at    DateTime  @default(now())
+  provenance          String?
+  precision           Float
+  recall              Float
+  f1_score            Float
+  created_at          DateTime @default(now())
 
   study Study? @relation(fields: [study_id], references: [id])
 }
@@ -100,81 +126,83 @@ model RunManifest {
   job_id        String    @default(uuid())
   model_name    String
   model_version String
-  run_type      String    // e.g. "comparison", "drift", "fairness"
+  run_type      String // e.g. "comparison", "drift", "fairness"
   started_at    DateTime  @default(now())
   completed_at  DateTime?
-  status        String    // "running" | "success" | "failed"
+  status        String // "running" | "success" | "failed"
   summary       Json?
 }
 
 model MetricsTimeSeries {
-  id           Int      @id @default(autoincrement())
-  model_name   String
+  id            Int      @id @default(autoincrement())
+  model_name    String
   model_version String
-  window       String
-  precision    Float
-  recall       Float
-  f1_score     Float
-  auc_roc      Float?
-  auc_pr       Float?
-  ppv          Float?
-  npv          Float?
-  prevalence   Float?
-  ece          Float?
-  n            Int?
-  computed_at  DateTime @default(now())
+  window        String
+  precision     Float
+  recall        Float
+  f1_score      Float
+  auc_roc       Float?
+  auc_pr        Float?
+  ppv           Float?
+  npv           Float?
+  prevalence    Float?
+  ece           Float?
+  n             Int?
+  computed_at   DateTime @default(now())
 }
 
-
 model DriftMetric {
-  id                Int      @id @default(autoincrement())
-  model_name        String
-  model_version     String
-  window            String
-  total_features    Int
-  drifted_features  Int
-  drift_rate        Float
-  avg_p_value       Float
-  created_at        DateTime @default(now())
+  id               Int      @id @default(autoincrement())
+  model_name       String
+  model_version    String
+  window           String
+  total_features   Int
+  drifted_features Int
+  drift_rate       Float
+  avg_p_value      Float
+  created_at       DateTime @default(now())
 }
 
 model DriftSignal {
-  id          Int      @id @default(autoincrement())
-  model_name  String
-  feature     String
-  method      String
-  p_value     Float
-  diff        Float
-  status      String
-  window      String
-  created_at  DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  model_name String
+  feature    String
+  method     String
+  p_value    Float
+  diff       Float
+  status     String
+  window     String
+  created_at DateTime @default(now())
 }
 
 model FairnessMetric {
-  id          Int      @id @default(autoincrement())
-  model_name  String
-  window      String
-  subgroup    String
-  precision   Float
-  recall      Float
-  f1_score    Float
-  delta       Float
-  created_at  DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  model_name String
+  window     String
+  subgroup   String
+  precision  Float
+  recall     Float
+  f1_score   Float
+  delta      Float
+  created_at DateTime @default(now())
 }
-
 
 model RBACUser {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  password    String   @default("changeme123")
-  role_id     Int
-  created_at  DateTime @default(now())
-  role        RBACRole @relation(fields: [role_id], references: [id])
+  id                    Int    @id @default(autoincrement())
+  email_ciphertext      String
+  email_encrypted_dek   String
+  email_index           String @unique
+  password              String
+  role_id               Int
+  created_at            DateTime @default(now())
+
+  role RBACRole @relation(fields: [role_id], references: [id])
 }
 
+
 model RBACRole {
-  id          Int           @id @default(autoincrement())
-  name        String         @unique
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
   permissions RBACPermission[]
   users       RBACUser[]
 }
@@ -194,4 +222,3 @@ model Alert {
   ack_by     String?
   created_at DateTime @default(now())
 }
-
