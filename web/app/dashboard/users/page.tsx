@@ -177,7 +177,7 @@ export default function UsersPage() {
             <table className="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
               <thead>
                 <tr className="bg-gray-100 dark:bg-gray-700 text-left text-gray-700 dark:text-gray-200 uppercase text-sm">
-                  <th className="p-3">Email</th>
+                  <th className="p-3">UserID</th>
                   <th className="p-3">Role</th>
                   <th className="p-3">Created</th>
                 </tr>
@@ -193,7 +193,7 @@ export default function UsersPage() {
                       transition-all
                     "
                   >
-                    <td className="p-3 text-gray-800 dark:text-gray-200">{u.email}</td>
+                    <td className="p-3 text-gray-800 dark:text-gray-200">{u.id}</td>
                     <td className="p-3 capitalize text-gray-700 dark:text-gray-300">{u.role?.name}</td>
                     <td className="p-3 text-gray-500 dark:text-gray-400 text-sm">
                       {new Date(u.created_at).toLocaleDateString()}

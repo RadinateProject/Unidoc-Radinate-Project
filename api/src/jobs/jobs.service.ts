@@ -101,8 +101,8 @@ export class JobsService {
 
     const summaries = [];
     for (const study of studies) {
-      const aiFindings = new Set(study.aiOutputs.map((a) => a.finding));
-      const gtFindings = new Set(study.groundTruths.map((g) => g.finding));
+      const aiFindings = new Set(study.aiOutputs.map((a) => a.finding_index));
+      const gtFindings = new Set(study.groundTruths.map((g) => g.finding_index));
 
       const tp = [...aiFindings].filter((f) => gtFindings.has(f)).length;
       const fp = [...aiFindings].filter((f) => !gtFindings.has(f)).length;

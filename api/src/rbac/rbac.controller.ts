@@ -45,8 +45,8 @@ export class RBACController {
       count: users.length,
       users: users.map((u) => ({
         id: u.id,
-        role: u.role.name,
-        created_at: u.created_at,
+        role: { name:u.role.name },
+        created_at: u.created_at
       })),
     };
   }
