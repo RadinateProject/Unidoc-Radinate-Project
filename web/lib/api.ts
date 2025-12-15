@@ -9,7 +9,9 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
     ...(options.headers || {}),
   };
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+  const response = await fetch(
+    // ${process.env.NEXT_PUBLIC_API_URL}
+    `${endpoint}`, {
     ...options,
     headers,
   });
