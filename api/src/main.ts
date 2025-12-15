@@ -24,12 +24,12 @@ async function bootstrap() {
   });
 
   // --- Production-safe allowlist: add every exact origin your frontend uses ---
-  const allowedOrigins = [
-    'http://radinate-frontend-bucket.s3-website-us-east-1.amazonaws.com', // S3 website (http)
-    // 'https://your-cloudfront-domain.cloudfront.net',                       // CloudFront (https) if you use it     
-    'http://localhost:3000',                                     // your production domain
-    // add any other exact origins you serve from (include scheme + host + optional port)
-  ];
+  // const allowedOrigins = [
+  //   'http://radinate-frontend-bucket.s3-website-us-east-1.amazonaws.com', // S3 website (http)
+  //   // 'https://your-cloudfront-domain.cloudfront.net',                       // CloudFront (https) if you use it     
+  //   'http://localhost:3000',                                     // your production domain
+  //   // add any other exact origins you serve from (include scheme + host + optional port)
+  // ];
 
   // app.enableCors({
   //   origin: (origin, callback) => {
