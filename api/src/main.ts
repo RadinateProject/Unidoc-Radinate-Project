@@ -31,25 +31,25 @@ async function bootstrap() {
     // add any other exact origins you serve from (include scheme + host + optional port)
   ];
 
-  app.enableCors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. curl, some mobile clients)
-      if (!origin) return callback(null, true);
+  // app.enableCors({
+  //   origin: (origin, callback) => {
+  //     // Allow requests with no origin (e.g. curl, some mobile clients)
+  //     if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        // echo back the incoming origin -> this causes Access-Control-Allow-Origin header to be set
-        return callback(null, true);
-      } else {
-        console.warn('[CORS] Rejected Origin:', origin);
-        return callback(new Error('Origin not allowed by CORS'));
-      }
-    },
-    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-    allowedHeaders: ['Content-Type','Authorization','X-Requested-With'],
-    credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  });
+  //     if (allowedOrigins.includes(origin)) {
+  //       // echo back the incoming origin -> this causes Access-Control-Allow-Origin header to be set
+  //       return callback(null, true);
+  //     } else {
+  //       console.warn('[CORS] Rejected Origin:', origin);
+  //       return callback(new Error('Origin not allowed by CORS'));
+  //     }
+  //   },
+  //   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  //   allowedHeaders: ['Content-Type','Authorization','X-Requested-With'],
+  //   credentials: true,
+  //   preflightContinue: false,
+  //   optionsSuccessStatus: 204,
+  // });
 
   await app.listen(process.env.PORT || 3001, '0.0.0.0');
   console.log('API listening on http://localhost:3001');
